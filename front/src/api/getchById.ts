@@ -1,5 +1,4 @@
 const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
-console.log('-----NEXT_PUBLIC_API_URL----', NEXT_PUBLIC_API_URL);
 
 export const fetchById = async (id: string) => {
   const token = localStorage.getItem('token');
