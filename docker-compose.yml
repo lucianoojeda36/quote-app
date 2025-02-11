@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: quotes
+    networks:
+      - app-network
+
+  app:
+    build: ./back
+    container_name: koywe-back
+    ports:
+      - '4000:4000'
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/quotes
+      JWT_SECRET: quotes
+      JWT_EXPIRES_IN: 1h
+      PORT: 4000
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+    command: npm run start:prod
+
+  frontend:
+    build: ./front
+    container_name: koywe-frontend
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_API_URL: http://app:4000
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
